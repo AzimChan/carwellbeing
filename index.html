@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Wellbeing Analyzer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(var(--border))",
+                        input: "hsl(var(--input))",
+                        ring: "hsl(var(--ring))",
+                        background: "hsl(var(--background))",
+                        foreground: "hsl(var(--foreground))",
+                        primary: {
+                            DEFAULT: "hsl(var(--primary))",
+                            foreground: "hsl(var(--primary-foreground))",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(var(--secondary))",
+                            foreground: "hsl(var(--secondary-foreground))",
+                        },
+                        destructive: {
+                            DEFAULT: "hsl(var(--destructive))",
+                            foreground: "hsl(var(--destructive-foreground))",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(var(--muted))",
+                            foreground: "hsl(var(--muted-foreground))",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(var(--accent))",
+                            foreground: "hsl(var(--accent-foreground))",
+                        },
+                        popover: {
+                            DEFAULT: "hsl(var(--popover))",
+                            foreground: "hsl(var(--popover-foreground))",
+                        },
+                        card: {
+                            DEFAULT: "hsl(var(--card))",
+                            foreground: "hsl(var(--card-foreground))",
+                        },
+                    },
+                    borderRadius: {
+                        lg: "var(--radius)",
+                        md: "calc(var(--radius) - 2px)",
+                        sm: "calc(var(--radius) - 4px)",
+                    },
+                },
+            },
+        }
+    </script>
+    <style>
+        :root {
+            --background: 0 0% 100%;
+            --foreground: 222.2 84% 4.9%;
+            --card: 0 0% 100%;
+            --card-foreground: 222.2 84% 4.9%;
+            --popover: 0 0% 100%;
+            --popover-foreground: 222.2 84% 4.9%;
+            --primary: 221.2 83.2% 53.3%;
+            --primary-foreground: 210 40% 98%;
+            --secondary: 210 40% 96%;
+            --secondary-foreground: 222.2 84% 4.9%;
+            --muted: 210 40% 96%;
+            --muted-foreground: 215.4 16.3% 46.9%;
+            --accent: 210 40% 96%;
+            --accent-foreground: 222.2 84% 4.9%;
+            --destructive: 0 84.2% 60.2%;
+            --destructive-foreground: 210 40% 98%;
+            --border: 214.3 31.8% 91.4%;
+            --input: 214.3 31.8% 91.4%;
+            --ring: 221.2 83.2% 53.3%;
+            --radius: 0.5rem;
+        }
+
+        .star.filled {
+            fill: #fbbf24;
+            color: #fbbf24;
+        }
+
+        .star.filled.red {
+            fill: #ef4444;
+            color: #ef4444;
+        }
+
+        .star.filled.yellow {
+            fill: #eab308;
+            color: #eab308;
+        }
+
+        .star {
+            width: 24px;
+            height: 24px;
+            fill: #d1d5db;
+            color: #d1d5db;
+        }
+    </style>
+</head>
+
+<body class="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div class="container mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <h1 class="text-4xl font-bold text-gray-900 mb-2">🚗 Car Wellbeing Analyzer</h1>
+            <p class="text-lg text-gray-600">AI-powered analysis for car cleanness and integrity</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="max-w-4xl mx-auto">
+            <!-- Upload Section -->
+            <div class="bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-4">Upload Car Image</h2>
+                
+                <!-- Drop Zone -->
+                <div id="dropZone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:border-primary hover:bg-primary/5 transition-colors cursor-pointer">
+                    <div class="space-y-4">
+                        <div class="mx-auto w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-lg font-medium text-gray-900">Drop your car image here</p>
+                            <p class="text-sm text-gray-500">or click to browse files</p>
+                        </div>
+                        <p class="text-xs text-gray-400">Supports JPG, PNG, GIF up to 10MB</p>
+                    </div>
+                </div>
+
+                <!-- Hidden File Input -->
+                <input type="file" id="fileInput" class="hidden" accept="image/*">
+
+                <!-- Image Preview -->
+                <div id="imagePreview" class="hidden mt-6">
+                    <div class="relative">
+                        <img id="previewImg" class="w-full max-w-md mx-auto rounded-lg shadow-md" alt="Preview">
+                        <button id="removeImage" class="absolute top-2 right-2 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-colors">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p id="fileName" class="text-center text-sm text-gray-600 mt-2"></p>
+                </div>
+
+                <!-- Analyze Button -->
+                <div class="mt-6 text-center">
+                    <button id="analyzeBtn" disabled class="bg-primary text-primary-foreground px-8 py-3 rounded-lg font-medium hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors">
+                        <span id="analyzeText">Analyze Car</span>
+                        <span id="analyzeLoading" class="hidden">
+                            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white inline" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Analyzing...
+                        </span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div id="overallStatus" class="hidden bg-white rounded-lg shadow-lg p-6 mb-8">
+                <h2 class="text-2xl font-semibold text-gray-900 mb-6">AI Damage Analysis Results</h2>
+                
+                <!-- Status Badge -->
+                <div class="text-center mb-6">
+                    <span id="statusBadge" class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium"></span>
+                </div>
+
+                <!-- Car Detection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Car Detection (%)</label>
+                    <div class="relative">
+                        <input type="range" id="aiCarLevel" min="0" max="100" value="0" disabled class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-not-allowed">
+                        <div class="flex justify-between text-xs text-gray-500 mt-1">
+                            <span>Not Car</span>
+                            <span>Definitely Car</span>
+                        </div>
+                    </div>
+                    <div class="text-center mt-2">
+                        <span id="aiCarValue" class="text-lg font-bold text-blue-600">0%</span>
+                    </div>
+                </div>
+
+                <!-- Damage Detection Row -->
+                <div class="grid md:grid-cols-3 gap-6 mb-6">
+                    <!-- Dent Detection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Dent Detection (%)</label>
+                        <div class="relative">
+                            <input type="range" id="aiDentLevel" min="0" max="100" value="0" disabled class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-not-allowed">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>No Dents</span>
+                                <span>Many Dents</span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span id="aiDentValue" class="text-lg font-bold text-orange-600">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Rust Detection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Rust Detection (%)</label>
+                        <div class="relative">
+                            <input type="range" id="aiRustLevel" min="0" max="100" value="0" disabled class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-not-allowed">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>No Rust</span>
+                                <span>Severe Rust</span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span id="aiRustValue" class="text-lg font-bold text-red-600">0%</span>
+                        </div>
+                    </div>
+
+                    <!-- Scratch Detection -->
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Scratch Detection (%)</label>
+                        <div class="relative">
+                            <input type="range" id="aiScratchLevel" min="0" max="100" value="0" disabled class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-not-allowed">
+                            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                                <span>No Scratches</span>
+                                <span>Deep Scratches</span>
+                            </div>
+                        </div>
+                        <div class="text-center mt-2">
+                            <span id="aiScratchValue" class="text-lg font-bold text-yellow-600">0%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- AI Star Rating Display -->
+                <div class="text-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-2">AI Assessment Rating</h3>
+                    <div id="aiStarRating" class="flex justify-center items-center space-x-1 mb-2"></div>
+                </div>
+
+                <!-- AI Warning Message -->
+                <div id="aiRatingWarning" class="hidden text-center p-3 rounded-md mb-6"></div>
+
+                <!-- Tips Section -->
+                <div class="bg-gray-50 rounded-lg p-6">
+                    <h3 class="text-lg font-semibold text-gray-900 mb-4">💡 Maintenance Tips</h3>
+                    <div id="tipsContent" class="space-y-3">
+                        <div class="flex items-start space-x-3">
+                            <div class="w-2 h-2 bg-primary rounded-full mt-2 flex-shrink-0"></div>
+                            <p class="text-sm text-muted-foreground">Upload a car image to get damage analysis and maintenance recommendations</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="/static/script.js"></script>
+</body>
+
+</html>
+
