@@ -1,10 +1,4 @@
 # Car Wellbeing Analyzer
-## Tech Stack
-
-- **Frontend**: Tailwind CSS
-- **Backend**: Python FastAPI with PyTorch
-- **AI Model**: ResNet-50 for multi-label car damage classification
-- **Computer Vision**: PyTorch and OpenCV for image analysis
 
 ## Quick Start
 
@@ -23,22 +17,6 @@ The API will be available at `http://localhost:3000`
 ### 3. Open the Frontend
 
 Open `http://localhost:3000/` in your web browser
-
-## AI Model Details
-
-### Multi-label Damage Classification
-The system uses a trained ResNet-50 model to classify car images into 4 categories simultaneously:
-
-- **Car** (Class 0): Clean car condition
-- **Dent** (Class 1): Dents and dings
-- **Rust** (Class 2): Rust and corrosion
-- **Scratch** (Class 3): Scratches and paint damage
-
-### Multi-label Features
-- **Sigmoid activation** for independent probabilities
-- **Threshold-based detection** (0.5 threshold)
-- **Multiple damage detection** per image
-- **Real damage percentages** for each type
 
 ## API Endpoints
 
@@ -77,14 +55,20 @@ Analyze car image for damage using multi-label classification
 ## Training Your Own Model
 
 To train the model on your own dataset:
-
 ```bash
 python model_training.py
 ```
-
 The training script follows a 5-step process:
-1. Convert dataset images to tensors
-2. Use pretrained ResNet-50 model
-3. Check for mistakes in validation
-4. Retrain model based on mistakes
-5. Retrain on same dataset for better results
+1) Turn Dataset images into tensors (There is 300 images in roboflow dataset)
+2) Use pretrained model (Resnet-50, augmentation)
+3) Check if there is any mistakes 
+4) Retrain model based on the mistake 
+5) Retrain model on the same dataset again to get better results
+
+## Tech Stack
+
+- **Frontend**: Tailwind CSS
+- **Backend**: Python FastAPI with PyTorch
+- **AI Model**: ResNet-50 for multi-label car damage classification
+- **Computer Vision**: PyTorch and OpenCV for image analysis
+
